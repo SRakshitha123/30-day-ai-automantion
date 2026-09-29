@@ -1,0 +1,151 @@
+{
+  "name": "My workflow 8",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b8e8c2cc-8a57-4643-b927-39afeee1a550",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://jsonplaceholder.typicode.com/invalid-url",
+        "options": {
+          "response": {
+            "response": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "b21171bf-d926-4922-85b8-336b04bf90f8",
+      "name": "HTTP Request",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json.myNewField = 1;\n}\n\nreturn $input.all();"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "2f8a7a7e-13ee-48d8-ab62-ae98201cdc60",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "794b5f4f-e965-4a8e-9163-efbfb2d6beab",
+              "name": "=statusCode",
+              "value": 426,
+              "type": "number"
+            },
+            {
+              "id": "fe0755c1-3dc3-435d-baaf-617483db75cc",
+              "name": "=success",
+              "value": "false",
+              "type": "string"
+            },
+            {
+              "id": "b66844c7-0506-4334-b06f-28c894eff6aa",
+              "name": "message",
+              "value": "API request failed",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        496,
+        144
+      ],
+      "id": "b8b80e50-6a35-485d-9727-ec26d1713942",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      statusCode: $json.error?.statusCode || 500,\n      success: false,\n      message: $json.error?.message || \"API request failed\"\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        720,
+        144
+      ],
+      "id": "52924d0e-92a8-40f9-8310-d49dd07cc06c",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c2a58451-b36f-4a41-98d2-a3808005377b",
+  "meta": {
+    "instanceId": "334d344d200737f98faffffe3804b4ad1e88eb010cf35170ab1e11e13f4330bf"
+  },
+  "nodeGroups": [],
+  "id": "sVSaOUlMmTEzh4Fh",
+  "tags": []
+}
